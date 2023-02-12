@@ -13,3 +13,13 @@ Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padr
 
 
 ![modelo_conceitual](https://user-images.githubusercontent.com/85500087/217897606-7284ce34-0fee-426e-8eea-cb8bce7a2cd5.png)
+
+# Tecnologias utilizadas
+## Back end
+- Java
+- Spring Boot
+- JPA / Hibernate
+- Maven
+- H2 Database
+-Postman
+
