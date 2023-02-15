@@ -38,3 +38,11 @@ Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padr
 - H2 Database
 - Postman
 
+<h2>Como criar e executar o DSCommerce localmente</h2>
+
+Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fácil. Certifique-se de ter o Git e JDK17 instalados e siga as instruções abaixo.
+
+
+- Clone o código fonte
+
+git@github.com:maririb749/dscommerce1.git
