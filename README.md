@@ -14,6 +14,11 @@ Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padr
 
 ![modelo_conceitual](https://user-images.githubusercontent.com/85500087/217897606-7284ce34-0fee-426e-8eea-cb8bce7a2cd5.png)
 
+## Experimente live demo:
+
+![cinnamon-20230215-133 (1)](https://user-images.githubusercontent.com/85500087/218984449-0d41c020-cd79-4383-a289-59b43a1f8b75.gif)
+
+
 # Tecnologias utilizadas
 ## Back end
 - Java
@@ -21,5 +26,5 @@ Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padr
 - JPA / Hibernate
 - Maven
 - H2 Database
--Postman
+- Postman
 
