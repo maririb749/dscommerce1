@@ -29,15 +29,6 @@ Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padr
 ![cinnamon-20230215-133 (1)](https://user-images.githubusercontent.com/85500087/218984449-0d41c020-cd79-4383-a289-59b43a1f8b75.gif)
 
 
-# Tecnologias utilizadas
-## Backend
-- Java
-- Spring Boot
-- JPA / Hibernate
-- Maven
-- H2 Database
-- Postman
-
 <h2>Como criar e executar o DSCommerce localmente</h2>
 
 Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fácil. Certifique-se de ter o Git e JDK17 instalados e siga as instruções abaixo.
@@ -58,6 +49,15 @@ git@github.com:maririb749/dscommerce1.git
  - senha: 123456
       
 - Link da Collections do postman:https://elements.getpostman.com/redirect?entityId=19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc&entityType=collection
+
+# Tecnologias utilizadas
+### Backend
+- Java
+- Spring Boot
+- JPA / Hibernate
+- Maven
+- H2 Database
+- Postman
 
  
 
