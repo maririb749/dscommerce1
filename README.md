@@ -49,7 +49,7 @@ git@github.com:maririb749/dscommerce1.git
 
 - Em sua IDE de preferência(utilizei Intellij), importe a pasta **backend** e faça o update das dependências do **maven**.
 
-- Ao executar o projeto, pode ser acessado um navegador da Web em http://localhost:8080/
+- Ao executar o projeto, pode ser acessado um navegador da Web em http://localhost:8080/h2-console
 
 - Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos. Obs:    Será necessário configurar a variáveis de ambiente no postman.  
 
