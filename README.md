@@ -42,7 +42,7 @@ Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fá
 
 - Ao executar o projeto, pode ser acessado um navegador da Web em http://localhost:8080/h2-console
 
-- Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos. Obs:    Será necessário configurar a variáveis de ambiente no postman.  
+- Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos. 
 
        
 - Link da Collections do postman:https://api.postman.com/collections/19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc?access_key=PMAT-01GSF9Z56EQSYEXHA4TYX2QRXB
