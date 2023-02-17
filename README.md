@@ -44,10 +44,7 @@ Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fá
 
 - Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos. Obs:    Será necessário configurar a variáveis de ambiente no postman.  
 
- - Dados para login: e-mail. 
-
- - senha: 123456
-      
+       
 - Link da Collections do postman:https://elements.getpostman.com/redirect?entityId=19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc&entityType=collection
 
 ## Tecnologias utilizadas
