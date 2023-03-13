@@ -1,13 +1,12 @@
 package com.mariana.dscommerce1.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Entity
 @Table(name = "tb_product")
-
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

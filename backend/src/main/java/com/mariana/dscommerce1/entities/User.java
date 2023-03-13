@@ -2,7 +2,7 @@ package com.mariana.dscommerce1.entities;
 
 
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

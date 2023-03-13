@@ -5,8 +5,9 @@ import com.mariana.dscommerce1.entities.Product;
 import com.mariana.dscommerce1.repositories.ProductRepository;
 import com.mariana.dscommerce1.services.exceptions.DatabaseException;
 import com.mariana.dscommerce1.services.exceptions.ResourcesNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -14,9 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -30,8 +28,8 @@ public class ProductService {
         }
 
     @Transactional(readOnly = true)
-        public Page<ProductDTO> findAll(Pageable pageable){
-        Page<Product> result = repository.findAll(pageable);
+        public Page<ProductDTO> findAll(String name, Pageable pageable){
+        Page<Product> result = repository.searchByName(name,pageable);
         return result.map(x -> new ProductDTO(x));
 
     }
