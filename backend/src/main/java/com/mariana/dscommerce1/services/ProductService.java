@@ -1,7 +1,9 @@
 package com.mariana.dscommerce1.services;
 
+import com.mariana.dscommerce1.dto.CategoryDTO;
 import com.mariana.dscommerce1.dto.ProductDTO;
 import com.mariana.dscommerce1.dto.ProductMinDTO;
+import com.mariana.dscommerce1.entities.Category;
 import com.mariana.dscommerce1.entities.Product;
 import com.mariana.dscommerce1.repositories.ProductRepository;
 import com.mariana.dscommerce1.services.exceptions.DatabaseException;
@@ -73,6 +75,13 @@ public class ProductService {
         entity.setDescription(dto.getDescription());
         entity.setPrice(dto.getPrice());
         entity.setImgUrl(dto.getImgUrl());
+
+        entity.getCategories().clear();
+        for(CategoryDTO catDto : dto.getCategories()){
+            Category cat = new Category();
+            cat.setId(catDto.getId());
+            entity.getCategories().add(cat);
+        }
     }
 
 }
