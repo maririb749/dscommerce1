@@ -3,6 +3,7 @@ package com.mariana.dscommerce1.controllers.handlers;
 import com.mariana.dscommerce1.dto.CustomError;
 import com.mariana.dscommerce1.dto.ValidationError;
 import com.mariana.dscommerce1.services.exceptions.DatabaseException;
+import com.mariana.dscommerce1.services.exceptions.ForbidenException;
 import com.mariana.dscommerce1.services.exceptions.ResourcesNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,12 @@ public class ControllerExceptionHandler {
         for(FieldError f: e.getBindingResult().getFieldErrors()){
             err.addError(f.getField(), f.getDefaultMessage());
         }
+        return ResponseEntity.status(status).body(err);
+    }
+    @ExceptionHandler(ForbidenException.class)
+    public ResponseEntity<CustomError> forbidden(ForbidenException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomError err = new CustomError(Instant.now(),status.value(), e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 }
