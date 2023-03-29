@@ -49,7 +49,7 @@ Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fá
 - senha: 123456
 
        
-- Link da Collections do postman:https:https://api.postman.com/collections/19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc?access_key=PMAT-01GSF9Z56EQSYEXHA4TYX2QRXB
+- Link da Collections do postman:https://api.postman.com/collections/19053874-9ea0ddb4-e2a7-4d31-a101-69b0432e9fa8?access_key=PMAT-01GWPGNF6Z5NRSDN5CEX8FDEWC
 
 ## Tecnologias utilizadas
 ### Backend
