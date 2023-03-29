@@ -2,7 +2,7 @@
 <h1 align="center"> Dscommerce </h1>
 
 <p align='center'> 
-    <img src="https://img.shields.io/badge/Spring_BootV3.0.1-F2F4F9?style=for-the-badge&logo=spring-boot"/>
+    <img src="https://img.shields.io/badge/Spring_BootV2.7.3-F2F4F9?style=for-the-badge&logo=spring-boot"/>
     <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white"/>  
     <img src="https://img.shields.io/badge/JWT-F2F4F9?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=black"/>
     <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white"/>
@@ -42,10 +42,14 @@ Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fá
 
 - Ao executar o projeto, pode ser acessado um navegador da Web em http://localhost:8080/h2-console
 
-- Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos. 
+- Collections do postman para fazer as requisições GET/PUT/DELETE E UPDATE para criação do usuário, lançar as pedidos e consultar todos os produtos.
+
+- Dados para login: maria@gmail.com (cliente) e alex@gmai.com (cliente e administrador).
+
+- senha: 123456
 
        
-- Link da Collections do postman:https://api.postman.com/collections/19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc?access_key=PMAT-01GSF9Z56EQSYEXHA4TYX2QRXB
+- Link da Collections do postman:https:https://api.postman.com/collections/19053874-0c6e1b77-f622-4f7b-8a0e-9c677895bcbc?access_key=PMAT-01GSF9Z56EQSYEXHA4TYX2QRXB
 
 ## Tecnologias utilizadas
 ### Backend
@@ -55,6 +59,9 @@ Criar e executar o projeto em seu ambiente de desenvolvimento local é muito fá
 - Maven
 - H2 Database
 - Postman
+- OAuth2 
+- JWT
+
 
  
 
