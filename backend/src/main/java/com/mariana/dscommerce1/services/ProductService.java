@@ -1,5 +1,16 @@
 package com.mariana.dscommerce1.services;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.mariana.dscommerce1.dto.CategoryDTO;
 import com.mariana.dscommerce1.dto.ProductDTO;
 import com.mariana.dscommerce1.dto.ProductMinDTO;
@@ -8,16 +19,6 @@ import com.mariana.dscommerce1.entities.Product;
 import com.mariana.dscommerce1.repositories.ProductRepository;
 import com.mariana.dscommerce1.services.exceptions.DatabaseException;
 import com.mariana.dscommerce1.services.exceptions.ResourcesNotFoundException;
-import javax.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductService {

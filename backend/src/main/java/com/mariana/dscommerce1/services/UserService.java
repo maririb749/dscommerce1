@@ -1,9 +1,5 @@
 package com.mariana.dscommerce1.services;
 
-import com.mariana.dscommerce1.dto.ProductDTO;
-import com.mariana.dscommerce1.dto.UserDTO;
-import com.mariana.dscommerce1.entities.User;
-import com.mariana.dscommerce1.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +7,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.mariana.dscommerce1.dto.UserDTO;
+import com.mariana.dscommerce1.entities.User;
+import com.mariana.dscommerce1.repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
