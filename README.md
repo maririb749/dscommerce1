@@ -16,7 +16,7 @@
 
 
 
-Este projeto teve o objetivo de criar um API Rest e-commerce, utilizando os padrões de arquitetura em camadas, onde é possível cadastrar um cliente com nível de autorização. Esse cliente pode cadastrar produtos (caso seja administrador) e selecionar os mesmos produtos  para efetuar uma compra.
+Este é o back-end de uma aplicação baseada em um comércio eletrônico que você navega, seja autenticado (logado) ou não, para os produtos que podem ser adicionados ao carrinho. Se estiver logado, o seu pedido pode ser finalizado. O Aplicativo oferece dois tipos de acesso, incluindo o usuário logado e o usuário admin. O admin pode registar, editar e excluir produtos na aplicação, enquanto o usuário logado pode incluir e remover itens do carrinho de compra, bem como alterar as quantidades de cada item.
 
 
 ## Modelo Conceitual
