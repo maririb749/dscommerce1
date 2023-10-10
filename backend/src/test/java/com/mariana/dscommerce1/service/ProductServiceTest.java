@@ -15,6 +15,7 @@ import com.mariana.dscommerce1.dto.ProductDTO;
 import com.mariana.dscommerce1.entities.Product;
 import com.mariana.dscommerce1.repositories.ProductRepository;
 import com.mariana.dscommerce1.services.ProductService;
+import com.mariana.dscommerce1.services.exceptions.ResourcesNotFoundException;
 import com.mariana.dscommerce1.tests.ProductFactory;
 
 @ExtendWith(SpringExtension.class)
@@ -41,6 +42,7 @@ public class ProductServiceTest {
 		product = ProductFactory.createProduct(productName);
 
 		Mockito.when(repository.findById(existingProductId)).thenReturn(Optional.of(product));
+		Mockito.when(repository.findById(nonExistingProductId)).thenReturn(Optional.empty());
 
 	}
 
@@ -53,6 +55,13 @@ public class ProductServiceTest {
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getId(), existingProductId);
 		Assertions.assertEquals(result.getName(), product.getName());
+	}
+	@Test
+	public void findByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExists() {
+		Assertions.assertThrows(ResourcesNotFoundException.class, () -> {
+			service.findById(nonExistingProductId);
+		});
+		
 	}
 
 }
