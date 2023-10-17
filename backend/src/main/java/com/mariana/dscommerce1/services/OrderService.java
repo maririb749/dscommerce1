@@ -42,8 +42,8 @@ public class OrderService {
         order.setMoment(Instant.now());
         order.setStatus(OrderStatus.WAITING_PAYMENT);
 
-        User user = userService.authenticated();
-        order.setClient(user);
+        final User user = this.userService.autheticated();
+		order.setClient(user);
 
         for (OrderItemDTO itemDto: dto.getItems()){
             Product product = productRepository.getReferenceById(itemDto.getProductId());

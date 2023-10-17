@@ -1,7 +1,8 @@
 package com.mariana.dscommerce1.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -9,39 +10,55 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mariana.dscommerce1.dto.UserDTO;
+import com.mariana.dscommerce1.entities.Role;
 import com.mariana.dscommerce1.entities.User;
+import com.mariana.dscommerce1.projection.UserDetailsProjection;
 import com.mariana.dscommerce1.repositories.UserRepository;
+import com.mariana.dscommerce1.utils.CustomUserUtil;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository repository;
+	private UserRepository repository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("Email not found");
-        }
-        return user;
-    }
-    protected User authenticated() {
-        try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            return repository.findByEmail(username);
+	private CustomUserUtil customUserUtil;
 
-        }
-        catch (Exception e){
-            throw new UsernameNotFoundException("Invalid user");
-        }
-    }
-    @Transactional(readOnly = true)
-    public UserDTO getMe(){
-        User entity = authenticated();
-        return new UserDTO(entity);
-    }
+	public UserService(UserRepository repository, CustomUserUtil customUserUtil) {
+		this.repository = repository;
+		this.customUserUtil = customUserUtil;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+		final List<UserDetailsProjection> result = this.repository.searchUsernameWithRolesByEmail(username);
+
+		if (result.size() == 0)
+			throw new UsernameNotFoundException("User not found");
+
+		User user = new User();
+		user.setEmail(username);
+		user.setPassword(result.get(0).getPassword());
+
+		for (UserDetailsProjection projection : result)
+			user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
+
+		return user;
+	}
+
+	@Transactional(readOnly = true)
+	public UserDTO getLoggedUser() {
+		final User user = this.autheticated();
+		return new UserDTO(user);
+	}
+
+	protected User autheticated() {
+		try {
+			final String username = customUserUtil.getLoggedUsername();
+			return this.repository.findByEmail(username).get();
+		} catch (Exception e) {
+			throw new UsernameNotFoundException("User not found");
+		}
+	}
+
 
 }
-
-
