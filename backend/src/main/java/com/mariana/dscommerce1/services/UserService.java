@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
 		return new UserDTO(user);
 	}
 
-	protected User autheticated() {
+	public User autheticated() {
 		try {
 			final String username = customUserUtil.getLoggedUsername();
 			return this.repository.findByEmail(username).get();
