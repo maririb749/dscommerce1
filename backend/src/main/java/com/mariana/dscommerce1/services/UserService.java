@@ -45,12 +45,7 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	@Transactional(readOnly = true)
-	public UserDTO getLoggedUser() {
-		final User user = this.autheticated();
-		return new UserDTO(user);
-	}
-
+	
 	public User autheticated() {
 		try {
 			final String username = customUserUtil.getLoggedUsername();
@@ -59,6 +54,12 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("User not found");
 		}
 	}
+	@Transactional(readOnly = true)
+	public UserDTO getMe() {
+		final User user = this.autheticated();
+		return new UserDTO(user);
+	}
+
 
 
 }
