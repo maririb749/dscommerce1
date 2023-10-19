@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -102,7 +101,7 @@ public class UserServiceTests {
 		UserService SpyUserService = Mockito.spy(service);
 		Mockito.doReturn(user).when(SpyUserService).autheticated();
 		
-		UserDTO result = SpyUserService.getMe();
+		UserDTO result = SpyUserService.getLoggedUser();
 		
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getEmail(), existingUserName);
@@ -110,14 +109,15 @@ public class UserServiceTests {
 	}
 	
 	@Test
-	public void getMeShouldThowUsernameNotFoundExceptionWhenUserNotAuthenticated() {
+	public void getLoggedUserShouldThrowUsernameNotFoundExceptionWhenUserNotAuthenticated() {
 		
-		UserService SpyUserService = Mockito.spy(service);
+		final UserService SpyUserService = Mockito.spy(service);
 		
 		Mockito.doThrow(UsernameNotFoundException.class).when(SpyUserService).autheticated();
 		
 		Assertions.assertThrows(UsernameNotFoundException.class, () -> {
-		UserDTO result = SpyUserService.getMe();
+		@SuppressWarnings("unused")
+		final UserDTO result = SpyUserService.getLoggedUser();
 	
 		});
 	}

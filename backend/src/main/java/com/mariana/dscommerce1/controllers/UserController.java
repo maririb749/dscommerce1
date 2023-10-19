@@ -16,11 +16,16 @@ public class UserController {
 
     @Autowired
     private UserService service;
+    
+
+	public UserController(UserService service) {
+		this.service = service;
+	}
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CLIENT')")
     @GetMapping(value = "/me")
     public ResponseEntity<UserDTO> getLoggedUser(){
-        UserDTO dto = service.getMe();
+    	final UserDTO dto = this.service.getLoggedUser();
         return ResponseEntity.ok(dto);
     }
 

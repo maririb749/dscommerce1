@@ -36,14 +36,14 @@ public class ProductService {
         return result.map(x -> new ProductMinDTO(x));
 
     }
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public ProductDTO insert(ProductDTO dto){
         Product entity = new Product();
         copyDtoToEntity(dto, entity);
         entity = repository.save(entity);
         return new ProductDTO(entity);
     }
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public ProductDTO update(Long id,ProductDTO dto) {
         try{
             Product entity = repository.getReferenceById(id);

@@ -144,4 +144,6 @@ public class User implements UserDetails {
 	public void addRole(Role role) {
 	    roles.add(role);
 	}
+
+
 }

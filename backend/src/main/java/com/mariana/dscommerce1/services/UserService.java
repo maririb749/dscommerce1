@@ -1,7 +1,6 @@
 package com.mariana.dscommerce1.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,9 +43,15 @@ public class UserService implements UserDetailsService {
 
 		return user;
 	}
-
 	
-	public User autheticated() {
+	@Transactional(readOnly = true)
+	public UserDTO getLoggedUser() {
+		final User user = this.autheticated();
+		return new UserDTO(user);
+	}
+
+
+	public  User autheticated() {
 		try {
 			final String username = customUserUtil.getLoggedUsername();
 			return this.repository.findByEmail(username).get();
@@ -54,12 +59,6 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException("User not found");
 		}
 	}
-	@Transactional(readOnly = true)
-	public UserDTO getMe() {
-		final User user = this.autheticated();
-		return new UserDTO(user);
-	}
 
-
-
+	
 }
