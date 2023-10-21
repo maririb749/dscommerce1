@@ -80,7 +80,7 @@ public class UserServiceTests {
 	public void authenticatedShouldReturnUserWhenUserExists() {
 		Mockito.when(userUtil.getLoggedUsername()).thenReturn(existingUserName);
 
-		User result = service.autheticated();
+		User result = service.authenticated();
 
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getUsername(), existingUserName);
@@ -90,7 +90,7 @@ public class UserServiceTests {
 	public void authenticatedShowilThrowUsernameNotFoudExceptionWhenUseDoesNotExists() {
 		Mockito.doThrow(ClassCastException.class).when(userUtil).getLoggedUsername();
 		Assertions.assertThrows(UsernameNotFoundException.class, () -> {
-			service.autheticated();
+			service.authenticated();
 		});
 
 	}
@@ -99,7 +99,7 @@ public class UserServiceTests {
 	public void getMeShouldReturnUserDTOWhenUserAuthenticated() {
 		
 		UserService SpyUserService = Mockito.spy(service);
-		Mockito.doReturn(user).when(SpyUserService).autheticated();
+		Mockito.doReturn(user).when(SpyUserService).authenticated();
 		
 		UserDTO result = SpyUserService.getLoggedUser();
 		
@@ -113,7 +113,7 @@ public class UserServiceTests {
 		
 		final UserService SpyUserService = Mockito.spy(service);
 		
-		Mockito.doThrow(UsernameNotFoundException.class).when(SpyUserService).autheticated();
+		Mockito.doThrow(UsernameNotFoundException.class).when(SpyUserService).authenticated();
 		
 		Assertions.assertThrows(UsernameNotFoundException.class, () -> {
 		@SuppressWarnings("unused")

@@ -46,12 +46,12 @@ public class UserService implements UserDetailsService {
 	
 	@Transactional(readOnly = true)
 	public UserDTO getLoggedUser() {
-		final User user = this.autheticated();
+		final User user = this.authenticated();
 		return new UserDTO(user);
 	}
 
 
-	public  User autheticated() {
+	public  User authenticated() {
 		try {
 			final String username = customUserUtil.getLoggedUsername();
 			return this.repository.findByEmail(username).get();
