@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.mariana.dscommerce1.dto.OrderDTO;
@@ -159,6 +160,18 @@ public class OrderServiceTests {
 		
 		Assertions.assertNotNull(result);
 		
+	}
+	@Test
+	public void insertShouldThrowsUserNameNotFoundExceptionWhenUserNotLogged() {
+		
+		Mockito.doThrow(UsernameNotFoundException.class).when(userService).authenticated();
+		
+		order.setClient(new User());
+		orderDTO = new OrderDTO(order);
+		
+		Assertions.assertThrows(UsernameNotFoundException.class,()-> {
+			OrderDTO result= service.insert(orderDTO);
+		});
 	}
 		
 
