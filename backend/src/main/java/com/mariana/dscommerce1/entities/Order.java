@@ -2,6 +2,8 @@ package com.mariana.dscommerce1.entities;
 
 import javax.persistence.*;
 
+import com.mariana.dscommerce1.dto.OrderDTO;
+
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -82,4 +84,6 @@ public class Order {
     public List<Product> getProducts() {
         return items.stream().map(x -> x.getProduct()).toList();
     }
+
+	
 }

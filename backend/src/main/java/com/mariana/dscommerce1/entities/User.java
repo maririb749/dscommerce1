@@ -36,14 +36,20 @@ public class User implements UserDetails {
 	public User() {
 	}
 
+	
+
 	public User(Long id, String name, String email, String phone, LocalDate birthDate, String password) {
+		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.birthDate = birthDate;
 		this.password = password;
+		
 	}
+
+
 
 	public Long getId() {
 		return id;
