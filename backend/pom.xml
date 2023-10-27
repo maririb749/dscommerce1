@@ -96,6 +96,9 @@
 						<exclude>com/mariana/dscommerce1/dto/**</exclude>
 						<exclude>com/mariana/dscommerce1/controllers/handlers/**</exclude>
 						<exclude>com/mariana/dscommerce1/services/exceptions/**</exclude>
+						<exclude>com/mariana/dscommerce1/utils/**</exclude>
+						<exclude>com/mariana/dscommerce1/controllers/**</exclude>
+						<exclude>com/mariana/dscommerce1/dscommerce1/**</exclude>
 					</excludes>
 				</configuration>
 
