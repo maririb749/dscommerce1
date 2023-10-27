@@ -43,7 +43,7 @@ public class AuthServiceTests {
 		Long userId = admin.getId();
 
 		Assertions.assertDoesNotThrow(() -> {
-			service.validateSelfOrAdmin(userId);
+			service.validateSelfUserOrAdmin(userId);
 
 		});
 
@@ -56,7 +56,7 @@ public class AuthServiceTests {
 		Long userId = otherClient.getId();
 
 		Assertions.assertDoesNotThrow(() -> {
-			service.validateSelfOrAdmin(userId);
+			service.validateSelfUserOrAdmin(userId);
 
 		});
 
@@ -73,7 +73,7 @@ public class AuthServiceTests {
 		final Long userId = otherClient.getId();
 
 		Assertions.assertThrows(ForbiddenException.class, () -> {
-			service.validateSelfOrAdmin(userId);
+			service.validateSelfUserOrAdmin(userId);
 		});
 	}
 

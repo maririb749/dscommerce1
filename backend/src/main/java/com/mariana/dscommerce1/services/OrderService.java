@@ -31,7 +31,7 @@ public class OrderService {
     public OrderDTO findById(Long id){
         Order order  = repository.findById(id).orElseThrow(
                 ()-> new ResourcesNotFoundException("Recurso não encontrado"));
-           authService.validateSelfOrAdmin(order.getClient().getId());
+           authService.validateSelfUserOrAdmin(order.getClient().getId());
         return new OrderDTO(order);
     }
 
