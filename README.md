@@ -16,7 +16,7 @@
 
 
 
-Este é o back-end de uma aplicação baseada em um comércio eletrônico que você navega, seja autenticado (logado) ou não, para os produtos que podem ser adicionados ao carrinho. Se estiver logado, o seu pedido pode ser finalizado. O Aplicativo oferece dois tipos de acesso, incluindo o usuário logado e o usuário admin. O admin pode registar, editar e excluir produtos na aplicação, enquanto o usuário logado pode incluir e remover itens do carrinho de compra, bem como alterar as quantidades de cada item.
+ A aplicação é baseada em um comércio eletrônico, sua regra de negócio solicita que o usuário acesse autenticado ou não, ele terá acesso a página  dos produtos, podendo adicioná-los no carrinho de compras. Caso esteja logado, o pedido pode ser finalizado. Aplicação disponibiliza dois tipos de acesso que são para o usuário comum logado ou  o admin. O admin pode realizar cadastro, atualização e exclusão de produtos da aplicação, enquanto o usuário logado comum pode incluir e remover itens do carrinho de compras, bem como alterar as quantidades de cada item.
 
 
 ## Modelo Conceitual
