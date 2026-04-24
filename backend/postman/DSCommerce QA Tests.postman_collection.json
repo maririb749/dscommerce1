@@ -305,7 +305,351 @@
     },
     {
       "name": "Product Catalog - Public Access",
-      "item": [],
+      "item": [
+        {
+          "name": "TC-004 - Search products by name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Test data used to validate search behavior\r",
+                  "const searchTerm = \"Macbook\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful product search\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response follows expected paginated structure\r",
+                  "pm.test(\"Response has paginated product structure\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"content\");\r",
+                  "    pm.expect(response).to.have.property(\"totalElements\");\r",
+                  "    pm.expect(response).to.have.property(\"totalPages\");\r",
+                  "    pm.expect(response).to.have.property(\"number\");\r",
+                  "    pm.expect(response).to.have.property(\"size\");\r",
+                  "\r",
+                  "    pm.expect(response.content).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that search returns at least one product for known test data\r",
+                  "pm.test(\"Search returns at least one matching product\", function () {\r",
+                  "    pm.expect(response.content.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that each returned product contains the search term in the name\r",
+                  "pm.test(\"Returned products match search term\", function () {\r",
+                  "    response.content.forEach(function (product) {\r",
+                  "        pm.expect(product.name.toLowerCase())\r",
+                  "            .to.include(searchTerm.toLowerCase());\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that product summary contains required fields\r",
+                  "pm.test(\"Product contains required summary fields\", function () {\r",
+                  "    const product = response.content[0];\r",
+                  "\r",
+                  "    pm.expect(product).to.have.property(\"id\");\r",
+                  "    pm.expect(product).to.have.property(\"name\");\r",
+                  "    pm.expect(product).to.have.property(\"price\");\r",
+                  "    pm.expect(product).to.have.property(\"imgUrl\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that product summary fields have correct data types\r",
+                  "pm.test(\"Product summary fields have valid data types\", function () {\r",
+                  "    const product = response.content[0];\r",
+                  "\r",
+                  "    pm.expect(product.id).to.be.a(\"number\");\r",
+                  "    pm.expect(product.name).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(product.price).to.be.a(\"number\");\r",
+                  "    pm.expect(product.imgUrl).to.be.a(\"string\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?name=Macbook",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Macbook"
+                }
+              ]
+            },
+            "description": "Validates that public users can search products by name and receive a paginated response containing products that match the search criteria."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-005 - List products with pagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected pagination values for this test case\r",
+                  "const expectedPage = 0;\r",
+                  "const expectedSize = 5;\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful paginated request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response follows expected paginated structure\r",
+                  "pm.test(\"Response has paginated product structure\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"content\");\r",
+                  "    pm.expect(response).to.have.property(\"totalElements\");\r",
+                  "    pm.expect(response).to.have.property(\"totalPages\");\r",
+                  "    pm.expect(response).to.have.property(\"number\");\r",
+                  "    pm.expect(response).to.have.property(\"size\");\r",
+                  "\r",
+                  "    pm.expect(response.content).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that API returns the requested page number\r",
+                  "pm.test(\"Response page number matches requested page\", function () {\r",
+                  "    pm.expect(response.number).to.eql(expectedPage);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that API returns the requested page size\r",
+                  "pm.test(\"Response page size matches requested size\", function () {\r",
+                  "    pm.expect(response.size).to.eql(expectedSize);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that returned products do not exceed requested page size\r",
+                  "pm.test(\"Returned products do not exceed requested size\", function () {\r",
+                  "    pm.expect(response.content.length).to.be.at.most(expectedSize);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that each product summary contains required fields\r",
+                  "pm.test(\"All products contain required summary fields\", function () {\r",
+                  "    response.content.forEach(function (product) {\r",
+                  "        pm.expect(product).to.have.property(\"id\");\r",
+                  "        pm.expect(product).to.have.property(\"name\");\r",
+                  "        pm.expect(product).to.have.property(\"price\");\r",
+                  "        pm.expect(product).to.have.property(\"imgUrl\");\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that each product summary field has correct data type\r",
+                  "pm.test(\"All product summary fields have valid data types\", function () {\r",
+                  "    response.content.forEach(function (product) {\r",
+                  "        pm.expect(product.id).to.be.a(\"number\");\r",
+                  "        pm.expect(product.name).to.be.a(\"string\").and.not.empty;\r",
+                  "        pm.expect(product.price).to.be.a(\"number\");\r",
+                  "        pm.expect(product.imgUrl).to.be.a(\"string\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products?page=0&size=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Validates that public users can retrieve products using pagination parameters and that the API returns the expected page size and structure."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-006 - Get product by invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse error response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected error message returned by the API for not found resources\r",
+                  "const expectedErrorMessage = \"recurso não encontrado\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that error response does not expose internal implementation details\r",
+                  "function expectNoInternalLeakage(value) {\r",
+                  "    const text = String(value).toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(text).to.not.include(\"exception\");\r",
+                  "    pm.expect(text).to.not.include(\"stacktrace\");\r",
+                  "    pm.expect(text).to.not.include(\"sql\");\r",
+                  "    pm.expect(text).to.not.include(\"hibernate\");\r",
+                  "    pm.expect(text).to.not.include(\"java.\");\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 404 for a non-existing product ID\r",
+                  "pm.test(\"Status code is 404 Not Found\", function () {\r",
+                  "    expectStatus(404);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate minimum error response contract used by this API\r",
+                  "pm.test(\"Error response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"timestamp\");\r",
+                  "    pm.expect(response).to.have.property(\"status\");\r",
+                  "    pm.expect(response).to.have.property(\"error\");\r",
+                  "    pm.expect(response).to.have.property(\"path\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response matches expected HTTP status\r",
+                  "pm.test(\"Error response status matches 404\", function () {\r",
+                  "    pm.expect(response.status).to.eql(404);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error message is not empty\r",
+                  "pm.test(\"Error message is not empty\", function () {\r",
+                  "    pm.expect(response.error).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error message is coherent with product not found scenario\r",
+                  "pm.test(\"Error message is coherent with product not found scenario\", function () {\r",
+                  "    pm.expect(response.error.toLowerCase()).to.include(expectedErrorMessage);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that request path matches the invalid product endpoint\r",
+                  "pm.test(\"Error path matches requested endpoint\", function () {\r",
+                  "    pm.expect(response.path).to.eql(\"/products/999999\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that success payload is not returned in error response\r",
+                  "pm.test(\"Error response does not include product success payload\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"id\");\r",
+                  "    pm.expect(response).to.not.have.property(\"name\");\r",
+                  "    pm.expect(response).to.not.have.property(\"price\");\r",
+                  "    pm.expect(response).to.not.have.property(\"imgUrl\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response does not expose internal implementation details\r",
+                  "pm.test(\"Error response does not expose internal details\", function () {\r",
+                  "    expectNoInternalLeakage(response.error);\r",
+                  "    expectNoInternalLeakage(response.path);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
       "description": "Validates public access to product catalog, including listing, search, pagination, and retrieval by ID."
     },
     {
