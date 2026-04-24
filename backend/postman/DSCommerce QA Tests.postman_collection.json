@@ -1,0 +1,343 @@
+{
+  "info": {
+    "_postman_id": "c42014e5-7490-4470-a611-fa7e81e0678e",
+    "name": "DSCommerce QA Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19053874"
+  },
+  "item": [
+    {
+      "name": "Smoke Tests",
+      "item": [
+        {
+          "name": "TC-001 - List products successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable performance threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response follows expected paginated structure\r",
+                  "pm.test(\"Response has paginated product structure\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"content\");\r",
+                  "    pm.expect(response).to.have.property(\"totalElements\");\r",
+                  "    pm.expect(response).to.have.property(\"totalPages\");\r",
+                  "    pm.expect(response).to.have.property(\"number\");\r",
+                  "    pm.expect(response).to.have.property(\"size\");\r",
+                  "\r",
+                  "    pm.expect(response.content).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that at least one product is returned in the response\r",
+                  "pm.test(\"Response contains at least one product\", function () {\r",
+                  "    pm.expect(response.content.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that product object contains all required fields\r",
+                  "pm.test(\"Product contains required fields\", function () {\r",
+                  "    const product = response.content[0];\r",
+                  "\r",
+                  "    pm.expect(product).to.have.property(\"id\");\r",
+                  "    pm.expect(product).to.have.property(\"name\");\r",
+                  "    pm.expect(product).to.have.property(\"description\");\r",
+                  "    pm.expect(product).to.have.property(\"price\");\r",
+                  "    pm.expect(product).to.have.property(\"imgUrl\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that product fields have correct data types and valid values\r",
+                  "pm.test(\"Product fields have valid data types\", function () {\r",
+                  "    const product = response.content[0];\r",
+                  "\r",
+                  "    pm.expect(product.id).to.be.a(\"number\");\r",
+                  "    pm.expect(product.name).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(product.description).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(product.price).to.be.a(\"number\");\r",
+                  "    pm.expect(product.imgUrl).to.be.a(\"string\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-002 - List categories successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that categories response is an array\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    pm.expect(response).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that at least one category is returned\r",
+                  "pm.test(\"Response contains at least one category\", function () {\r",
+                  "    pm.expect(response.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate category contract and data quality safely\r",
+                  "if (Array.isArray(response) && response.length > 0) {\r",
+                  "    pm.test(\"All categories contain required fields\", function () {\r",
+                  "        response.forEach((category) => {\r",
+                  "            pm.expect(category).to.have.property(\"id\");\r",
+                  "            pm.expect(category).to.have.property(\"name\");\r",
+                  "        });\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"All category fields have valid data types\", function () {\r",
+                  "        response.forEach((category) => {\r",
+                  "            pm.expect(category.id).to.be.a(\"number\");\r",
+                  "            pm.expect(category.name).to.be.a(\"string\").and.not.empty;\r",
+                  "        });\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-003 - Get product details successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid repeating pm.response.json()\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Helper: validates that the API returns JSON.\r",
+                  "// This confirms the response format is correct for API consumers.\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: validates the expected HTTP status code.\r",
+                  "// This confirms that the request was processed successfully.\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "//  Status\r",
+                  "// Validate that the API returns HTTP 200 for a successful public product request.\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "//  Content-Type\r",
+                  "// Validate that the response is returned in JSON format.\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "//  Product contract\r",
+                  "// Validate the minimum product contract required to display product details.\r",
+                  "pm.test(\"Product contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"id\");\r",
+                  "    pm.expect(response).to.have.property(\"name\");\r",
+                  "    pm.expect(response).to.have.property(\"description\");\r",
+                  "    pm.expect(response).to.have.property(\"price\");\r",
+                  "    pm.expect(response).to.have.property(\"imgUrl\");\r",
+                  "    pm.expect(response).to.have.property(\"categories\");\r",
+                  "});\r",
+                  "\r",
+                  "//  Field data types\r",
+                  "// Validate product field data types to prevent frontend or consumer issues.\r",
+                  "pm.test(\"Product fields have valid data types\", function () {\r",
+                  "    pm.expect(response.id).to.be.a(\"number\");\r",
+                  "    pm.expect(response.name).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(response.description).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(response.price).to.be.a(\"number\");\r",
+                  "    pm.expect(response.imgUrl).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(response.categories).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "//  Business rules\r",
+                  "// Validate that the product price is greater than zero.\r",
+                  "pm.test(\"Price is valid\", function () {\r",
+                  "    pm.expect(response.price).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "//  Categories\r",
+                  "// Validate that at least one category is linked to the product.\r",
+                  "pm.test(\"Product contains at least one category\", function () {\r",
+                  "    pm.expect(response.categories.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "if (Array.isArray(response.categories) && response.categories.length > 0) {\r",
+                  "    pm.test(\"All product categories contain required fields\", function () {\r",
+                  "        response.categories.forEach((category) => {\r",
+                  "            pm.expect(category).to.have.property(\"id\");\r",
+                  "            pm.expect(category).to.have.property(\"name\");\r",
+                  "        });\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"All product category fields have valid data types\", function () {\r",
+                  "        response.categories.forEach((category) => {\r",
+                  "            pm.expect(category.id).to.be.a(\"number\");\r",
+                  "            pm.expect(category.name).to.be.a(\"string\").and.not.empty;\r",
+                  "        });\r",
+                  "    });\r",
+                  "}\r",
+                  "\r",
+                  "// Performance\r",
+                  "// Validate that the response time is within an acceptable limit.\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Catalog - Public Access",
+      "item": []
+    },
+    {
+      "name": "Categories - Public Access",
+      "item": []
+    },
+    {
+      "name": "Authentication",
+      "item": []
+    },
+    {
+      "name": "User Profile",
+      "item": []
+    },
+    {
+      "name": "Orders - Authenticated User",
+      "item": []
+    },
+    {
+      "name": "Product Management - Admin",
+      "item": []
+    },
+    {
+      "name": "Authorization and Permissions",
+      "item": []
+    },
+    {
+      "name": "Boundary and Edge Cases",
+      "item": []
+    },
+    {
+      "name": "Bug Evidence",
+      "item": []
+    }
+  ]
+}
