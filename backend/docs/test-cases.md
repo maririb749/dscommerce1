@@ -96,12 +96,15 @@
 
 ---
 
-## TC-006 - Access user profile with valid token
+## 6. Risks and Considerations
 
-**Scenario:** TS-005 - User Profile  
-**Priority:** High  
-**Type:** Functional / Security  
-**Precondition:** User is authenticated and has a valid access token.
+- The application uses Spring Boot 2.7.3, which may require dependency review for long-term maintenance, compatibility, and security considerations in production environments.
+
+- The use of an in-memory H2 database causes all data to reset after each application restart, which may impact test reproducibility and persistence-related validations.
+
+- Authentication and authorization flows must be carefully validated to ensure proper access control between CLIENT and ADMIN roles, preventing unauthorized actions.
+
+- API error handling must be validated to ensure consistent responses, proper HTTP status codes, and absence of internal system exposure (e.g., stack traces or sensitive details).
 
 ### Steps
 1. Authenticate with valid user credentials.
