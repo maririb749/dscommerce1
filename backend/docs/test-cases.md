@@ -1,11 +1,15 @@
 # Test Cases - DSCommerce API
 
+## 01 - Smoke Tests
+
+---
+
 ## TC-001 - List products successfully
 
 **Scenario:** TS-001 - Product Catalog - Public Access  
 **Priority:** High  
-**Type:** Functional / API  
-**Precondition:** API is running.
+**Type:** Smoke / Functional / API  
+**Precondition:** API is running and product data is available.
 
 ### Steps
 1. Send a GET request to `/products`.
@@ -13,18 +17,57 @@
 ### Expected Result
 - Status code should be `200 OK`.
 - Response should return a paginated list of products.
-- Each product should contain basic information such as id, name, description, price and image URL.
+- Each product summary should contain `id`, `name`, `price`, and `imgUrl`.
+- Response should not be empty.
 
 ### Postman Request
 `GET {{base_url}}/products`
 
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Paginated response structure
+- Non-empty product list
+- Required product summary fields
+- Product summary field data types
+
 ---
 
-## TC-002 - Get product by valid ID
+## TC-002 - List categories successfully
+
+**Scenario:** TS-003 - Categories - Public Access  
+**Priority:** High  
+**Type:** Smoke / Functional / API  
+**Precondition:** API is running and category data is available.
+
+### Steps
+1. Send a GET request to `/categories`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return a list of categories.
+- Each category should contain `id` and `name`.
+
+### Postman Request
+`GET {{base_url}}/categories`
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Array response structure
+- Non-empty category list
+- Required category fields
+- Category field data types
+
+---
+
+## TC-003 - Get product details successfully
 
 **Scenario:** TS-002 - Product Details - Public Access  
 **Priority:** High  
-**Type:** Functional / API  
+**Type:** Smoke / Functional / API  
 **Precondition:** Product with ID `1` exists in the database.
 
 ### Steps
@@ -32,15 +75,91 @@
 
 ### Expected Result
 - Status code should be `200 OK`.
-- Response should return the product details.
+- Response should return product details.
 - Product ID should be `1`.
+- Product detail should contain `id`, `name`, `description`, `price`, `imgUrl`, and categories when available.
 
 ### Postman Request
 `GET {{base_url}}/products/1`
 
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Product detail contract
+- Product ID
+- Required product detail fields
+- Product detail field data types
+
 ---
 
-## TC-003 - Get product by invalid ID
+## 02 - Product Catalog - Public Access
+
+---
+
+## TC-004 - Search products by name
+
+**Scenario:** TS-001 - Product Catalog - Public Access  
+**Priority:** High  
+**Type:** Functional / API  
+**Precondition:** API is running and product data is available.
+
+### Steps
+1. Send a GET request to `/products?name=Macbook`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return a paginated product list.
+- Returned products should match the searched name.
+- Each product should contain the expected summary fields.
+
+### Postman Request
+`GET {{base_url}}/products?name=Macbook`
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Paginated response structure
+- Search result relevance
+- Required product summary fields
+- Product summary field data types
+
+---
+
+## TC-005 - List products with pagination
+
+**Scenario:** TS-001 - Product Catalog - Public Access  
+**Priority:** High  
+**Type:** Functional / API  
+**Precondition:** API is running and product data is available.
+
+### Steps
+1. Send a GET request to `/products?page=0&size=5`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return page `0`.
+- Response should use page size `5`.
+- Returned products should not exceed the requested page size.
+
+### Postman Request
+`GET {{base_url}}/products?page=0&size=5`
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Paginated response structure
+- Requested page number
+- Requested page size
+- Maximum number of returned products
+- Required product summary fields
+- Product summary field data types
+
+---
+
+## TC-006 - Get product by invalid ID
 
 **Scenario:** TS-009 - Negative and Boundary Cases  
 **Priority:** Medium  
@@ -52,145 +171,21 @@
 
 ### Expected Result
 - Status code should be `404 Not Found`.
-- Response should contain an error message.
+- Response should return a controlled error response.
+- Error response should contain `timestamp`, `status`, `error`, and `path`.
+- Response should not expose internal implementation details.
+- Response should not return a product success payload.
 
 ### Postman Request
 `GET {{base_url}}/products/999999`
 
----
-
-## TC-004 - List categories successfully
-
-**Scenario:** TS-003 - Categories - Public Access  
-**Priority:** High  
-**Type:** Functional / API  
-**Precondition:** API is running.
-
-### Steps
-1. Send a GET request to `/categories`.
-
-### Expected Result
-- Status code should be `200 OK`.
-- Response should return the list of categories.
-
-### Postman Request
-`GET {{base_url}}/categories`
-
----
-
-## TC-005 - Access protected user profile without token
-
-**Scenario:** TS-008 - Authorization and Permissions  
-**Priority:** High  
-**Type:** Security / Negative  
-**Precondition:** No authentication token is provided.
-
-### Steps
-1. Send a GET request to `/users/me` without Bearer Token.
-
-### Expected Result
-- Status code should be `401 Unauthorized`.
-
-### Postman Request
-`GET {{base_url}}/users/me`
-
----
-
-## 6. Risks and Considerations
-
-- The application uses Spring Boot 2.7.3, which may require dependency review for long-term maintenance, compatibility, and security considerations in production environments.
-
-- The use of an in-memory H2 database causes all data to reset after each application restart, which may impact test reproducibility and persistence-related validations.
-
-- Authentication and authorization flows must be carefully validated to ensure proper access control between CLIENT and ADMIN roles, preventing unauthorized actions.
-
-- API error handling must be validated to ensure consistent responses, proper HTTP status codes, and absence of internal system exposure (e.g., stack traces or sensitive details).
-
-### Steps
-1. Authenticate with valid user credentials.
-2. Send a GET request to `/users/me` using Bearer Token.
-
-### Expected Result
-- Status code should be `200 OK`.
-- Response should return authenticated user data.
-
-### Postman Request
-`GET {{base_url}}/users/me`
-
----
-
-## TC-007 - Create product without authentication
-
-**Scenario:** TS-008 - Authorization and Permissions  
-**Priority:** High  
-**Type:** Security / Negative  
-**Precondition:** No authentication token is provided.
-
-### Steps
-1. Send a POST request to `/products` without Bearer Token.
-2. Provide a valid product payload.
-
-### Expected Result
-- Status code should be `401 Unauthorized`.
-
-### Postman Request
-`POST {{base_url}}/products`
-
----
-
-## TC-008 - Create product as non-admin user
-
-**Scenario:** TS-008 - Authorization and Permissions  
-**Priority:** High  
-**Type:** Security / Negative  
-**Precondition:** User is authenticated with CLIENT role.
-
-### Steps
-1. Authenticate as CLIENT.
-2. Send a POST request to `/products`.
-
-### Expected Result
-- Status code should be `403 Forbidden`.
-
-### Postman Request
-`POST {{base_url}}/products`
-
----
-
-## TC-009 - Create product as admin
-
-**Scenario:** TS-007 - Product Management - Admin  
-**Priority:** High  
-**Type:** Functional / Security  
-**Precondition:** User is authenticated with ADMIN role.
-
-### Steps
-1. Authenticate as ADMIN.
-2. Send a POST request to `/products` with valid product data.
-
-### Expected Result
-- Status code should be `201 Created`.
-- Product should be created successfully.
-
-### Postman Request
-`POST {{base_url}}/products`
-
----
-
-## TC-010 - Create order with valid authenticated user
-
-**Scenario:** TS-006 - Order Creation  
-**Priority:** High  
-**Type:** Functional / Business Rule  
-**Precondition:** User is authenticated and product exists.
-
-### Steps
-1. Authenticate as CLIENT.
-2. Send a POST request to `/orders` with valid product and quantity.
-
-### Expected Result
-- Status code should be `201 Created`.
-- Order should be created successfully.
-
-### Postman Request
-`POST {{base_url}}/orders`
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Error response contract
+- Error status
+- Error message through the `error` field
+- Requested path
+- Absence of product success payload
+- Absence of internal leakage
