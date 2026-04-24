@@ -2,6 +2,7 @@
   "info": {
     "_postman_id": "c42014e5-7490-4470-a611-fa7e81e0678e",
     "name": "DSCommerce QA Tests",
+    "description": "DSCommerce API QA test collection covering smoke, functional, security, authorization, negative, boundary and edge case tests.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "19053874"
   },
@@ -67,18 +68,16 @@
                   "\r",
                   "    pm.expect(product).to.have.property(\"id\");\r",
                   "    pm.expect(product).to.have.property(\"name\");\r",
-                  "    pm.expect(product).to.have.property(\"description\");\r",
                   "    pm.expect(product).to.have.property(\"price\");\r",
                   "    pm.expect(product).to.have.property(\"imgUrl\");\r",
                   "});\r",
                   "\r",
-                  "// Validate that product fields have correct data types and valid values\r",
-                  "pm.test(\"Product fields have valid data types\", function () {\r",
+                  "// Validate that product summary fields have correct data types and valid values\r",
+                  "pm.test(\"Product summary fields have valid data types\", function () {\r",
                   "    const product = response.content[0];\r",
                   "\r",
                   "    pm.expect(product.id).to.be.a(\"number\");\r",
                   "    pm.expect(product.name).to.be.a(\"string\").and.not.empty;\r",
-                  "    pm.expect(product.description).to.be.a(\"string\").and.not.empty;\r",
                   "    pm.expect(product.price).to.be.a(\"number\");\r",
                   "    pm.expect(product.imgUrl).to.be.a(\"string\");\r",
                   "});"
@@ -301,43 +300,53 @@
           },
           "response": []
         }
-      ]
+      ],
+      "description": "Validates that the main public API resources are available and returning the expected basic contract before deeper functional testing."
     },
     {
       "name": "Product Catalog - Public Access",
-      "item": []
+      "item": [],
+      "description": "Validates public access to product catalog, including listing, search, pagination, and retrieval by ID."
     },
     {
       "name": "Categories - Public Access",
-      "item": []
+      "item": [],
+      "description": "Validates public access to product categories and ensures correct structure and data integrity."
     },
     {
       "name": "Authentication",
-      "item": []
+      "item": [],
+      "description": "Validates authentication flow, including token generation, invalid credentials handling, and security behavior."
     },
     {
       "name": "User Profile",
-      "item": []
+      "item": [],
+      "description": "Validates that authenticated users can access their own profile data and that protected user information is not exposed without a valid token."
     },
     {
       "name": "Orders - Authenticated User",
-      "item": []
+      "item": [],
+      "description": "Validates authenticated user order flows, including order creation, order retrieval, item quantities, and business rules related to checkout."
     },
     {
       "name": "Product Management - Admin",
-      "item": []
+      "item": [],
+      "description": "Validates ADMIN product management permissions, including product creation, update, deletion, and validation of required product data."
     },
     {
       "name": "Authorization and Permissions",
-      "item": []
+      "item": [],
+      "description": "Validates role-based access control between CLIENT and ADMIN users, ensuring proper permission enforcement."
     },
     {
       "name": "Boundary and Edge Cases",
-      "item": []
+      "item": [],
+      "description": "Validates system behavior under boundary conditions, including invalid inputs, limits, and edge scenarios."
     },
     {
       "name": "Bug Evidence",
-      "item": []
+      "item": [],
+      "description": "Stores requests that reproduce confirmed defects or unexpected behaviors, including evidence used for bug reports and test documentation."
     }
   ]
 }
