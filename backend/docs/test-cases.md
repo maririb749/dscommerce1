@@ -189,3 +189,303 @@
 - Requested path
 - Absence of product success payload
 - Absence of internal leakage
+
+---
+
+## 03 - Categories - Public Access
+
+---
+
+## TC-007 - List categories with full contract validation
+
+**Scenario:** TS-003 - Categories - Public Access  
+**Priority:** High  
+**Type:** Functional / API  
+**Precondition:** API is running and category data is available.
+
+### Steps
+1. Send a GET request to `/categories`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return a list of categories.
+- Each category should contain `id` and `name`.
+- Category IDs should be positive numbers.
+- Category names should not be empty.
+
+### Postman Request
+`GET {{base_url}}/categories`
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Array response structure
+- Non-empty category list
+- Required category fields
+- Category field data types
+- Positive category IDs
+- Non-empty category names
+
+---
+
+## 04 - Authentication
+
+---
+
+## TC-008 - Authenticate client successfully
+
+**Scenario:** TS-004 - Authentication  
+**Priority:** High  
+**Type:** Functional / Security / API  
+**Precondition:** API is running and client user exists in the database.
+
+### Steps
+1. Send a POST request to `/oauth/token`.
+2. Use Basic Auth with valid client credentials.
+3. Send valid client user credentials using `x-www-form-urlencoded`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return a valid `access_token`.
+- Token type should be `bearer`.
+- Token expiration should be present and valid.
+- JWT should follow the expected `header.payload.signature` format.
+- Response should not expose user password, client secret, or internal implementation details.
+- Access token should be stored in the Postman environment as `client_token`.
+
+### Postman Request
+`POST {{base_url}}/oauth/token`
+
+### Authentication
+- Type: Basic Auth
+- Username: `myclientid`
+- Password: `myclientsecret`
+
+### Body
+`x-www-form-urlencoded`
+
+| Key | Value |
+|---|---|
+| grant_type | password |
+| username | maria@gmail.com |
+| password | 123456 |
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Authentication response contract
+- Access token presence
+- Token type
+- Expiration value
+- JWT format
+- Absence of credentials or internal sensitive data
+- Token stored in environment as `client_token`
+
+---
+
+---
+
+## TC-009 - Authenticate admin successfully
+
+**Scenario:** TS-004 - Authentication  
+**Priority:** High  
+**Type:** Functional / Security / API  
+**Precondition:** API is running and admin user exists in the database.
+
+### Steps
+1. Send a POST request to `/oauth/token`.
+2. Use Basic Auth with valid client credentials.
+3. Send valid admin user credentials using `x-www-form-urlencoded`.
+
+### Expected Result
+- Status code should be `200 OK`.
+- Response should return a valid `access_token`.
+- Token type should be `bearer`.
+- Token expiration should be present and valid.
+- JWT should follow the expected `header.payload.signature` format.
+- JWT should belong to `alex@gmail.com`.
+- JWT should contain `ROLE_ADMIN`.
+- Response should not expose user password, client secret, or internal implementation details.
+- Access token should be stored in the Postman environment as `admin_token`.
+
+### Postman Request
+`POST {{base_url}}/oauth/token`
+
+### Authentication
+- Type: Basic Auth
+- Username: `myclientid`
+- Password: `myclientsecret`
+
+### Body
+`x-www-form-urlencoded`
+
+| Key | Value |
+|---|---|
+| grant_type | password |
+| username | alex@gmail.com |
+| password | 123456 |
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Authentication response contract
+- Access token presence
+- Token type
+- Expiration value
+- JWT format
+- JWT authenticated username
+- JWT admin authority
+- Absence of credentials or internal sensitive data
+- Token stored in environment as `admin_token`
+
+---
+
+## TC-010 - Reject authentication with invalid password
+
+**Scenario:** TS-004 - Authentication  
+**Priority:** High  
+**Type:** Negative / Security / API  
+**Precondition:** API is running and client user exists in the database.
+
+### Steps
+1. Send a POST request to `/oauth/token`.
+2. Use Basic Auth with valid client credentials.
+3. Send a valid username with an invalid password using `x-www-form-urlencoded`.
+
+### Expected Result
+- Status code should be `400 Bad Request`.
+- Response should return a controlled authentication error.
+- Error should indicate invalid credentials.
+- Response should not return an `access_token`.
+- Response should not return token metadata.
+- Response should not expose user password, client secret, or internal implementation details.
+
+### Postman Request
+`POST {{base_url}}/oauth/token`
+
+### Authentication
+- Type: Basic Auth
+- Username: `myclientid`
+- Password: `myclientsecret`
+
+### Body
+`x-www-form-urlencoded`
+
+| Key | Value |
+|---|---|
+| grant_type | password |
+| username | maria@gmail.com |
+| password | wrong_password |
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Error response contract
+- Error message
+- Absence of access token
+- Absence of token metadata
+- Absence of credentials or internal sensitive data
+
+---
+
+## TC-011 - Reject authentication with invalid user
+
+**Scenario:** TS-004 - Authentication  
+**Priority:** High  
+**Type:** Negative / Security / API  
+**Precondition:** API is running.
+
+### Steps
+1. Send a POST request to `/oauth/token`.
+2. Use Basic Auth with valid client credentials.
+3. Send a non-existing username with a valid password using `x-www-form-urlencoded`.
+
+### Expected Result
+- Status code should be `400 Bad Request`.
+- Response should return a controlled authentication error.
+- Error should indicate invalid credentials.
+- Response should not return an `access_token`.
+- Response should not return token metadata.
+- Response should not expose user password, client secret, or internal implementation details.
+
+### Postman Request
+`POST {{base_url}}/oauth/token`
+
+### Authentication
+- Type: Basic Auth
+- Username: `myclientid`
+- Password: `myclientsecret`
+
+### Body
+`x-www-form-urlencoded`
+
+| Key | Value |
+|---|---|
+| grant_type | password |
+| username | nonexistent.user@gmail.com |
+| password | 123456 |
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Error response contract
+- Error message
+- Absence of access token
+- Absence of token metadata
+- Absence of credentials or internal sensitive data
+
+---
+
+## TC-012 - Reject authentication with invalid client credentials
+
+**Scenario:** TS-004 - Authentication  
+**Priority:** High  
+**Type:** Negative / Security / API  
+**Precondition:** API is running and user credentials are valid.
+
+### Steps
+1. Send a POST request to `/oauth/token`.
+2. Use invalid Basic Auth client credentials.
+3. Send valid user credentials using `x-www-form-urlencoded`.
+
+### Expected Result
+- Status code should be `401 Unauthorized`.
+- Response should return a controlled authorization error.
+- Error response should contain `timestamp`, `status`, `error`, and `path`.
+- Response should not return an `access_token`.
+- Response should not return token metadata.
+- Response should not expose user password, client secret, or internal implementation details.
+
+### Postman Request
+`POST {{base_url}}/oauth/token`
+
+### Authentication
+- Type: Basic Auth
+- Username: `invalidclientid`
+- Password: `invalidclientsecret`
+
+### Body
+`x-www-form-urlencoded`
+
+| Key | Value |
+|---|---|
+| grant_type | password |
+| username | maria@gmail.com |
+| password | 123456 |
+
+### Validations
+- HTTP status code
+- JSON content type
+- Response time
+- Error response contract
+- Error status
+- Error value
+- Error path
+- Absence of access token
+- Absence of token metadata
+- Absence of credentials or internal sensitive data

@@ -654,12 +654,897 @@
     },
     {
       "name": "Categories - Public Access",
-      "item": [],
+      "item": [
+        {
+          "name": "TC-007 - List categories with full contract validation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful category listing request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is an array of categories\r",
+                  "pm.test(\"Response is an array\", function () {\r",
+                  "    pm.expect(response).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that at least one category is returned\r",
+                  "pm.test(\"Response contains at least one category\", function () {\r",
+                  "    pm.expect(response.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that all categories contain required fields\r",
+                  "pm.test(\"All categories contain required fields\", function () {\r",
+                  "    response.forEach(function (category) {\r",
+                  "        pm.expect(category).to.have.property(\"id\");\r",
+                  "        pm.expect(category).to.have.property(\"name\");\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that all category fields have correct data types\r",
+                  "pm.test(\"All category fields have valid data types\", function () {\r",
+                  "    response.forEach(function (category) {\r",
+                  "        pm.expect(category.id).to.be.a(\"number\");\r",
+                  "        pm.expect(category.name).to.be.a(\"string\").and.not.empty;\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that all category IDs are positive numbers\r",
+                  "pm.test(\"All category IDs are positive\", function () {\r",
+                  "    response.forEach(function (category) {\r",
+                  "        pm.expect(category.id).to.be.above(0);\r",
+                  "    });\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that category names do not contain blank values\r",
+                  "pm.test(\"Category names are not blank\", function () {\r",
+                  "    response.forEach(function (category) {\r",
+                  "        pm.expect(category.name.trim()).to.not.eql(\"\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            },
+            "description": "Validates that public users can retrieve the category list and that all returned categories follow the expected response contract."
+          },
+          "response": []
+        }
+      ],
       "description": "Validates public access to product categories and ensures correct structure and data integrity."
     },
     {
       "name": "Authentication",
-      "item": [],
+      "item": [
+        {
+          "name": "TC-008 - Authenticate client successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that response does not expose credentials or user password\r",
+                  "function expectNoCredentialsLeakage() {\r",
+                  "    const responseText = pm.response.text().toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(responseText).to.not.include(\"password\");\r",
+                  "    pm.expect(responseText).to.not.include(\"senha\");\r",
+                  "    pm.expect(responseText).to.not.include(\"client_secret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"myclientsecret\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate JWT structure without logging its content\r",
+                  "function expectValidJwtFormat(token) {\r",
+                  "    const parts = token.split(\".\");\r",
+                  "    pm.expect(parts.length).to.eql(3);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful authentication request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate authentication response contract\r",
+                  "pm.test(\"Authentication response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"access_token\");\r",
+                  "    pm.expect(response).to.have.property(\"token_type\");\r",
+                  "    pm.expect(response).to.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that access token is present without printing it\r",
+                  "pm.test(\"Access token is returned\", function () {\r",
+                  "    pm.expect(response.access_token).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token type is bearer\r",
+                  "pm.test(\"Token type is bearer\", function () {\r",
+                  "    pm.expect(response.token_type.toLowerCase()).to.eql(\"bearer\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token expiration is present and valid\r",
+                  "pm.test(\"Token expiration is valid\", function () {\r",
+                  "    pm.expect(response.expires_in).to.be.a(\"number\");\r",
+                  "    pm.expect(response.expires_in).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate JWT format without decoding or logging sensitive content\r",
+                  "pm.test(\"JWT is properly formatted\", function () {\r",
+                  "    expectValidJwtFormat(response.access_token);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response does not expose credentials or password\r",
+                  "pm.test(\"Response does not expose credentials or password\", function () {\r",
+                  "    expectNoCredentialsLeakage();\r",
+                  "});\r",
+                  "\r",
+                  "// Store client access token for authenticated requests without logging it\r",
+                  "pm.test(\"Client access token is stored in environment\", function () {\r",
+                  "    pm.environment.set(\"client_token\", response.access_token);\r",
+                  "\r",
+                  "    pm.expect(pm.environment.get(\"client_token\")).to.be.a(\"string\").and.not.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "myclientid",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "myclientsecret",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text",
+                  "uuid": "52147f3a-b4fd-48bb-b79c-e0ad699b8046"
+                },
+                {
+                  "key": "username",
+                  "value": "maria@gmail.com",
+                  "type": "text",
+                  "uuid": "d2ad71bb-f68d-4c06-8bcf-09b879309239"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text",
+                  "uuid": "45c6a6b1-537a-4679-84f9-a4944b380b7c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Validates that a registered client user can authenticate successfully and receive a valid access token."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-009 - Authenticate admin successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected authenticated admin user\r",
+                  "const expectedUsername = \"alex@gmail.com\";\r",
+                  "const expectedAdminRole = \"ROLE_ADMIN\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that response does not expose credentials or internal data\r",
+                  "function expectNoCredentialsLeakage() {\r",
+                  "    const responseText = pm.response.text().toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(responseText).to.not.include(\"password\");\r",
+                  "    pm.expect(responseText).to.not.include(\"senha\");\r",
+                  "    pm.expect(responseText).to.not.include(\"client_secret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"myclientsecret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"exception\");\r",
+                  "    pm.expect(responseText).to.not.include(\"stacktrace\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Decode JWT payload without logging token content\r",
+                  "function decodeJwtPayload(token) {\r",
+                  "    const payload = token.split(\".\")[1];\r",
+                  "    const base64 = payload.replace(/-/g, \"+\").replace(/_/g, \"/\");\r",
+                  "    const decodedPayload = atob(base64);\r",
+                  "\r",
+                  "    return JSON.parse(decodedPayload);\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API returns HTTP 200 for a successful admin authentication request\r",
+                  "pm.test(\"Status code is 200 OK\", function () {\r",
+                  "    expectStatus(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate authentication response contract\r",
+                  "pm.test(\"Authentication response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"access_token\");\r",
+                  "    pm.expect(response).to.have.property(\"token_type\");\r",
+                  "    pm.expect(response).to.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that access token is present without printing it\r",
+                  "pm.test(\"Access token is returned\", function () {\r",
+                  "    pm.expect(response.access_token).to.be.a(\"string\").and.not.empty;\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token type is bearer\r",
+                  "pm.test(\"Token type is bearer\", function () {\r",
+                  "    pm.expect(response.token_type.toLowerCase()).to.eql(\"bearer\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token expiration is present and valid\r",
+                  "pm.test(\"Token expiration is valid\", function () {\r",
+                  "    pm.expect(response.expires_in).to.be.a(\"number\");\r",
+                  "    pm.expect(response.expires_in).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate JWT format and decode payload safely\r",
+                  "pm.test(\"JWT is properly formatted\", function () {\r",
+                  "    const parts = response.access_token.split(\".\");\r",
+                  "    pm.expect(parts.length).to.eql(3);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that JWT belongs to the expected admin user\r",
+                  "pm.test(\"JWT belongs to admin user\", function () {\r",
+                  "    const payload = decodeJwtPayload(response.access_token);\r",
+                  "\r",
+                  "    pm.expect(payload).to.have.property(\"user_name\");\r",
+                  "    pm.expect(payload.user_name).to.eql(expectedUsername);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that JWT contains admin authority\r",
+                  "pm.test(\"JWT contains admin authority\", function () {\r",
+                  "    const payload = decodeJwtPayload(response.access_token);\r",
+                  "\r",
+                  "    pm.expect(payload).to.have.property(\"authorities\");\r",
+                  "    pm.expect(payload.authorities).to.be.an(\"array\");\r",
+                  "    pm.expect(payload.authorities).to.include(expectedAdminRole);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response does not expose credentials or internal details\r",
+                  "pm.test(\"Response does not expose credentials or internal details\", function () {\r",
+                  "    expectNoCredentialsLeakage();\r",
+                  "});\r",
+                  "\r",
+                  "// Store admin access token for admin-only requests\r",
+                  "pm.test(\"Admin access token is stored in environment\", function () {\r",
+                  "    pm.environment.set(\"admin_token\", response.access_token);\r",
+                  "\r",
+                  "    pm.expect(pm.environment.get(\"admin_token\")).to.be.a(\"string\").and.not.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "myclientid",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "myclientsecret",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text",
+                  "uuid": "52147f3a-b4fd-48bb-b79c-e0ad699b8046"
+                },
+                {
+                  "key": "username",
+                  "value": "alex@gmail.com",
+                  "type": "text",
+                  "uuid": "d2ad71bb-f68d-4c06-8bcf-09b879309239"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text",
+                  "uuid": "45c6a6b1-537a-4679-84f9-a4944b380b7c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Validates that a registered client user can authenticate successfully and receive a valid access token."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-010 - Reject authentication with invalid password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse error response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected API error values for invalid password authentication\r",
+                  "const expectedError = \"invalid_grant\";\r",
+                  "const expectedDescription = \"credenciais\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that response does not expose credentials or internal details\r",
+                  "function expectNoCredentialsLeakage() {\r",
+                  "    const responseText = pm.response.text().toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(responseText).to.not.include(\"password\");\r",
+                  "    pm.expect(responseText).to.not.include(\"senha:\");\r",
+                  "    pm.expect(responseText).to.not.include(\"client_secret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"myclientsecret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"exception\");\r",
+                  "    pm.expect(responseText).to.not.include(\"stacktrace\");\r",
+                  "    pm.expect(responseText).to.not.include(\"hibernate\");\r",
+                  "    pm.expect(responseText).to.not.include(\"sql\");\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API rejects authentication with invalid password\r",
+                  "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+                  "    expectStatus(400);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate authentication error response contract\r",
+                  "pm.test(\"Authentication error response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"error\");\r",
+                  "    pm.expect(response).to.have.property(\"error_description\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate OAuth error code\r",
+                  "pm.test(\"Error code is invalid_grant\", function () {\r",
+                  "    pm.expect(response.error).to.eql(expectedError);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error description is present and coherent\r",
+                  "pm.test(\"Error description is coherent with invalid credentials\", function () {\r",
+                  "    pm.expect(response.error_description).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(response.error_description.toLowerCase()).to.include(expectedDescription);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that access token is not returned for invalid authentication\r",
+                  "pm.test(\"Access token is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"access_token\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token metadata is not returned\r",
+                  "pm.test(\"Token metadata is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"token_type\");\r",
+                  "    pm.expect(response).to.not.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response does not expose credentials or internal implementation details\r",
+                  "pm.test(\"Response does not expose credentials or internal details\", function () {\r",
+                  "    expectNoCredentialsLeakage();\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "myclientid",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "myclientsecret",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text",
+                  "uuid": "52147f3a-b4fd-48bb-b79c-e0ad699b8046"
+                },
+                {
+                  "key": "username",
+                  "value": "maria@gmail.com",
+                  "type": "text",
+                  "uuid": "d2ad71bb-f68d-4c06-8bcf-09b879309239"
+                },
+                {
+                  "key": "password",
+                  "value": "wrong_password",
+                  "type": "text",
+                  "uuid": "45c6a6b1-537a-4679-84f9-a4944b380b7c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Validates that a registered client user can authenticate successfully and receive a valid access token."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-011 - Reject authentication with invalid user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse error response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected API error values for invalid password authentication\r",
+                  "const expectedError = \"invalid_grant\";\r",
+                  "const expectedDescription = \"credenciais\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that response does not expose credentials or internal details\r",
+                  "function expectNoCredentialsLeakage() {\r",
+                  "    const responseText = pm.response.text().toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(responseText).to.not.include(\"password\");\r",
+                  "    pm.expect(responseText).to.not.include(\"senha:\");\r",
+                  "    pm.expect(responseText).to.not.include(\"client_secret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"myclientsecret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"exception\");\r",
+                  "    pm.expect(responseText).to.not.include(\"stacktrace\");\r",
+                  "    pm.expect(responseText).to.not.include(\"hibernate\");\r",
+                  "    pm.expect(responseText).to.not.include(\"sql\");\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API rejects authentication with invalid password\r",
+                  "pm.test(\"Status code is 400 Bad Request\", function () {\r",
+                  "    expectStatus(400);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate authentication error response contract\r",
+                  "pm.test(\"Authentication error response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"error\");\r",
+                  "    pm.expect(response).to.have.property(\"error_description\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate OAuth error code\r",
+                  "pm.test(\"Error code is invalid_grant\", function () {\r",
+                  "    pm.expect(response.error).to.eql(expectedError);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error description is present and coherent\r",
+                  "pm.test(\"Error description is coherent with invalid credentials\", function () {\r",
+                  "    pm.expect(response.error_description).to.be.a(\"string\").and.not.empty;\r",
+                  "    pm.expect(response.error_description.toLowerCase()).to.include(expectedDescription);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that access token is not returned for invalid authentication\r",
+                  "pm.test(\"Access token is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"access_token\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token metadata is not returned\r",
+                  "pm.test(\"Token metadata is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"token_type\");\r",
+                  "    pm.expect(response).to.not.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response does not expose credentials or internal implementation details\r",
+                  "pm.test(\"Response does not expose credentials or internal details\", function () {\r",
+                  "    expectNoCredentialsLeakage();\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "myclientid",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "myclientsecret",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text",
+                  "uuid": "52147f3a-b4fd-48bb-b79c-e0ad699b8046"
+                },
+                {
+                  "key": "username",
+                  "value": " nonexistent.user@gmail.com",
+                  "type": "text",
+                  "uuid": "d2ad71bb-f68d-4c06-8bcf-09b879309239"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text",
+                  "uuid": "45c6a6b1-537a-4679-84f9-a4944b380b7c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Validates that a registered client user can authenticate successfully and receive a valid access token."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-012 - Reject authentication with invalid client credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Parse error response body once to avoid redundancy\r",
+                  "const response = pm.response.json();\r",
+                  "\r",
+                  "// Expected API error values for invalid client credentials\r",
+                  "const expectedStatus = 401;\r",
+                  "const expectedError = \"Unauthorized\";\r",
+                  "const expectedPath = \"/oauth/token\";\r",
+                  "\r",
+                  "// Helper: Validate that response Content-Type is JSON\r",
+                  "function expectJsonContentType() {\r",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\"))\r",
+                  "        .to.include(\"application/json\");\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate HTTP status code\r",
+                  "function expectStatus(statusCode) {\r",
+                  "    pm.response.to.have.status(statusCode);\r",
+                  "}\r",
+                  "\r",
+                  "// Helper: Validate that response does not expose credentials or internal details\r",
+                  "function expectNoCredentialsLeakage() {\r",
+                  "    const responseText = pm.response.text().toLowerCase();\r",
+                  "\r",
+                  "    pm.expect(responseText).to.not.include(\"password\");\r",
+                  "    pm.expect(responseText).to.not.include(\"senha\");\r",
+                  "    pm.expect(responseText).to.not.include(\"client_secret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"myclientsecret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"invalidclientsecret\");\r",
+                  "    pm.expect(responseText).to.not.include(\"exception\");\r",
+                  "    pm.expect(responseText).to.not.include(\"stacktrace\");\r",
+                  "    pm.expect(responseText).to.not.include(\"hibernate\");\r",
+                  "    pm.expect(responseText).to.not.include(\"sql\");\r",
+                  "}\r",
+                  "\r",
+                  "// Validate that API rejects authentication with invalid client credentials\r",
+                  "pm.test(\"Status code is 401 Unauthorized\", function () {\r",
+                  "    expectStatus(expectedStatus);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error response is returned in JSON format\r",
+                  "pm.test(\"Content-Type is application/json\", function () {\r",
+                  "    expectJsonContentType();\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response time is within acceptable threshold\r",
+                  "pm.test(\"Response time is acceptable\", function () {\r",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate minimum error response contract\r",
+                  "pm.test(\"Error response contains required fields\", function () {\r",
+                  "    pm.expect(response).to.have.property(\"timestamp\");\r",
+                  "    pm.expect(response).to.have.property(\"status\");\r",
+                  "    pm.expect(response).to.have.property(\"error\");\r",
+                  "    pm.expect(response).to.have.property(\"path\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error status matches unauthorized access\r",
+                  "pm.test(\"Error response status matches 401\", function () {\r",
+                  "    pm.expect(response.status).to.eql(expectedStatus);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error value is Unauthorized\r",
+                  "pm.test(\"Error value is Unauthorized\", function () {\r",
+                  "    pm.expect(response.error).to.eql(expectedError);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that error path matches token endpoint\r",
+                  "pm.test(\"Error path matches token endpoint\", function () {\r",
+                  "    pm.expect(response.path).to.eql(expectedPath);\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that access token is not returned\r",
+                  "pm.test(\"Access token is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"access_token\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that token metadata is not returned\r",
+                  "pm.test(\"Token metadata is not returned\", function () {\r",
+                  "    pm.expect(response).to.not.have.property(\"token_type\");\r",
+                  "    pm.expect(response).to.not.have.property(\"expires_in\");\r",
+                  "});\r",
+                  "\r",
+                  "// Validate that response does not expose credentials or internal implementation details\r",
+                  "pm.test(\"Response does not expose credentials or internal details\", function () {\r",
+                  "    expectNoCredentialsLeakage();\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "password",
+                  "value": "invalidclientsecret",
+                  "type": "string"
+                },
+                {
+                  "key": "username",
+                  "value": "invalidclientid",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "password",
+                  "type": "text",
+                  "uuid": "52147f3a-b4fd-48bb-b79c-e0ad699b8046"
+                },
+                {
+                  "key": "username",
+                  "value": "maria@gmail.com",
+                  "type": "text",
+                  "uuid": "d2ad71bb-f68d-4c06-8bcf-09b879309239"
+                },
+                {
+                  "key": "password",
+                  "value": "123456",
+                  "type": "text",
+                  "uuid": "45c6a6b1-537a-4679-84f9-a4944b380b7c"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            },
+            "description": "Validates that a registered client user can authenticate successfully and receive a valid access token."
+          },
+          "response": []
+        }
+      ],
       "description": "Validates authentication flow, including token generation, invalid credentials handling, and security behavior."
     },
     {
